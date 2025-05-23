@@ -279,6 +279,7 @@ integer ::           &
      id_precip,      &   ! rain and snow from condensation and convection
      id_conv_dt_tg,  &   ! temperature tendency from convection
      id_conv_dt_qg,  &   ! temperature tendency from convection
+     id_conv_dt_qg_2,&   ! DUPLICATE DIAGNOSTIC TEST
      id_cond_dt_tg,  &   ! temperature tendency from condensation
      id_cond_dt_qg,  &   ! temperature tendency from condensation
      id_bucket_depth,      &   ! bucket depth variable for output
@@ -761,6 +762,8 @@ end select
 !if(lwet_convection .or. do_bm) then
    id_conv_dt_qg = register_diag_field(mod_name, 'dt_qg_convection',          &
         axes(1:3), Time, 'Moisture tendency from convection','kg/kg/s')
+   id_conv_dt_qg_2 = register_diag_field(mod_name, 'dt_qg_conv_2',          &
+        axes(1:3), Time, 'duplicate test diagnostic','kg/kg/s')
    id_conv_dt_tg = register_diag_field(mod_name, 'dt_tg_convection',          &
         axes(1:3), Time, 'Temperature tendency from convection','K/s')
    id_conv_rain = register_diag_field(mod_name, 'convection_rain',            &
@@ -910,6 +913,7 @@ case(FULL_BETTS_MILLER_CONV)
    precip     = rain
 
    if(id_conv_dt_qg > 0) used = send_data(id_conv_dt_qg, conv_dt_qg, Time)
+   if(id_conv_dt_qg_2 > 0) used = send_data(id_conv_dt_qg_2, conv_dt_qg, Time)
    if(id_conv_dt_tg > 0) used = send_data(id_conv_dt_tg, conv_dt_tg, Time)
    if(id_conv_rain  > 0) used = send_data(id_conv_rain, rain, Time)
    if(id_cape  > 0) used = send_data(id_cape, cape, Time)

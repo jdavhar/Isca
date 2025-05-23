@@ -192,6 +192,10 @@ class Experiment(Logger, EventEmitter):
     def check_for_existing_output(self, i):
         outdir = P(self.datadir, self.runfmt % i)
         return os.path.isdir(outdir)
+    
+    # attempting to allow choosing a different field table
+    def set_field_table(self, field_table):
+        self.field_table_file = P(self.codebase.srcdir, 'extra', 'model', self.codebase.name, field_table)
 
     @destructive
     @useworkdir
