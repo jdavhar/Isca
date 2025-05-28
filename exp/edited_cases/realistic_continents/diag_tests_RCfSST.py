@@ -6,7 +6,7 @@ import f90nml
 
 from isca import IscaCodeBase, DiagTable, Experiment, Namelist, GFDL_BASE
 
-NCORES = 16
+NCORES = 32
 base_dir = os.path.dirname(os.path.realpath(__file__))
 # a CodeBase can be a directory on the computer,
 # useful for iterative development
@@ -23,7 +23,7 @@ cb = IscaCodeBase.from_directory(GFDL_BASE)
 
 # create an Experiment object to handle the configuration of model parameters
 # and output diagnostics
-exp = Experiment('dupe_diag_test_experiment', codebase=cb)
+exp = Experiment('dupe_tracer_experiment_3', codebase=cb)
 
 #Add any input files that are necessary for a particular experiment.
 exp.inputfiles = [os.path.join(GFDL_BASE,'input/land_masks/era_land_t42.nc'),os.path.join(GFDL_BASE,'input/rrtm_input_files/ozone_1990.nc'),
@@ -47,7 +47,9 @@ diag.add_field('dynamics', 'temp', time_avg=True)
 diag.add_field('dynamics', 'vor', time_avg=True)
 diag.add_field('dynamics', 'div', time_avg=True)
 diag.add_field('atmosphere', 'dt_qg_convection', time_avg=True)
+
 diag.add_field('atmosphere', 'dt_qg_conv_2', time_avg=True)
+diag.add_field('dynamics', 'sphum_2', time_avg=True)
 
 exp.diag_table = diag
 
@@ -69,6 +71,9 @@ exp.update_namelist({
         'specify_sst_over_ocean_only' : True, #Make sure sst only specified in regions of ocean.
     }
 })
+
+# choose field table
+exp.set_field_table("test_field_table")
 
 #Lets do a run!
 if __name__=="__main__":

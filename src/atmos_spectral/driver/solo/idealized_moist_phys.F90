@@ -310,9 +310,12 @@ type(surf_diff_type) :: Tri_surf ! used by gcm_vert_diff
 real :: d622 = 0.
 real :: d378 = 0.
 
+!!! attempting to change nsphum to be 1 and 2 in order to duplicate the tracer
+
 logical :: used, doing_edt, doing_entrain, do_strat
 integer, dimension(4) :: axes
-integer :: is, ie, js, je, num_levels, nsphum, dt_integer
+integer :: is, ie, js, je, num_levels, dt_integer , nsphum
+! integer, dimension(2) :: nsphum
 real :: dt_real
 type(time_type) :: Time_step
 
@@ -456,8 +459,9 @@ if(do_lcl_diffusivity_depth .and. (.not. (lwet_convection .or. do_ras .or. do_bm
   call error_mesg('idealized_moist_phys','do_lcl_diffusivity_depth cannot be .true. if moist convection is not enabled',FATAL)
 
 
-
+!!! redefine nsphum
 nsphum = nhum
+! nsphum = [1, 2]
 Time_step = Time_step_in
 call get_time(Time_step, seconds, days)
 dt_integer   = 86400*days + seconds

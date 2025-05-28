@@ -78,7 +78,7 @@ class Experiment(Logger, EventEmitter):
         self.templates = Environment(loader=FileSystemLoader(self.template_dir))
 
         self.diag_table = DiagTable()
-        self.field_table_file = P(self.codebase.srcdir, 'extra', 'model', self.codebase.name, 'field_table')
+        self.field_table_file = P(self.codebase.srcdir, 'extra', 'model', self.codebase.name, 'default_field_table')
         self.inputfiles = []
 
         self.namelist = Namelist()
@@ -193,7 +193,7 @@ class Experiment(Logger, EventEmitter):
         outdir = P(self.datadir, self.runfmt % i)
         return os.path.isdir(outdir)
     
-    # attempting to allow choosing a different field table
+    # allow choosing a different field table
     def set_field_table(self, field_table):
         self.field_table_file = P(self.codebase.srcdir, 'extra', 'model', self.codebase.name, field_table)
 
