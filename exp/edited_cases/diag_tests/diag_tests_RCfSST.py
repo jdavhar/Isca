@@ -23,7 +23,7 @@ cb = IscaCodeBase.from_directory(GFDL_BASE)
 
 # create an Experiment object to handle the configuration of model parameters
 # and output diagnostics
-exp = Experiment('dupe_tracer_experiment_3', codebase=cb)
+exp = Experiment('dupe_tracer_experiment_5', codebase=cb)
 
 #Add any input files that are necessary for a particular experiment.
 exp.inputfiles = [os.path.join(GFDL_BASE,'input/land_masks/era_land_t42.nc'),os.path.join(GFDL_BASE,'input/rrtm_input_files/ozone_1990.nc'),
@@ -58,7 +58,7 @@ exp.diag_table = diag
 exp.clear_rundir()
 
 #Define values for the 'core' namelist
-namelist_name = os.path.join(GFDL_BASE, 'exp/test_cases/realistic_continents/namelist_basefile.nml')
+namelist_name = os.path.join(GFDL_BASE, 'exp/edited_cases/realistic_continents.nml')
 nml = f90nml.read(namelist_name)
 exp.namelist = nml
 

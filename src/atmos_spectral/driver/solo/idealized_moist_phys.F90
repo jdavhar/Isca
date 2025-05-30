@@ -310,12 +310,9 @@ type(surf_diff_type) :: Tri_surf ! used by gcm_vert_diff
 real :: d622 = 0.
 real :: d378 = 0.
 
-!!! attempting to change nsphum to be 1 and 2 in order to duplicate the tracer
-
 logical :: used, doing_edt, doing_entrain, do_strat
 integer, dimension(4) :: axes
-integer :: is, ie, js, je, num_levels, dt_integer , nsphum
-! integer, dimension(2) :: nsphum
+integer :: is, ie, js, je, num_levels, dt_integer, nsphum
 real :: dt_real
 type(time_type) :: Time_step
 
@@ -459,9 +456,7 @@ if(do_lcl_diffusivity_depth .and. (.not. (lwet_convection .or. do_ras .or. do_bm
   call error_mesg('idealized_moist_phys','do_lcl_diffusivity_depth cannot be .true. if moist convection is not enabled',FATAL)
 
 
-!!! redefine nsphum
 nsphum = nhum
-! nsphum = [1, 2]
 Time_step = Time_step_in
 call get_time(Time_step, seconds, days)
 dt_integer   = 86400*days + seconds
@@ -976,8 +971,10 @@ case default
 end select
 
 ! Add the T and q tendencies due to convection to the timestep
+!!! apply to duplicate
 dt_tg = dt_tg + conv_dt_tg
 dt_tracers(:,:,:,nsphum) = dt_tracers(:,:,:,nsphum) + conv_dt_qg
+! dt_tracers(:,:,:,2) = dt_tracers(:,:,:,2) + conv_dt_qg
 
 convective_rain = precip
 
@@ -1001,6 +998,7 @@ if (r_conv_scheme .ne. DRY_CONV) then
 
   dt_tg = dt_tg + cond_dt_tg
   dt_tracers(:,:,:,nsphum) = dt_tracers(:,:,:,nsphum) + cond_dt_qg
+  ! dt_tracers(:,:,:,2) = dt_tracers(:,:,:,2) + cond_dt_qg
 
   if(id_cond_dt_qg > 0) used = send_data(id_cond_dt_qg, cond_dt_qg, Time)
   if(id_cond_dt_tg > 0) used = send_data(id_cond_dt_tg, cond_dt_tg, Time)
@@ -1242,7 +1240,7 @@ if(do_damping) then
                              dt_ug(:,:,:), dt_vg(:,:,:), dt_tg(:,:,:),                  &
                              dt_tracers(:,:,:,nsphum), dt_tracers(:,:,:,:),             &
                              z_pbl) ! have taken the names of arrays etc from vert_turb_driver below. Watch ntp from 2006 call to this routine?
-endif
+endif !!! this one doesn't make any changes to dt tracers
 
 
 if(turb) then
@@ -1399,6 +1397,10 @@ if(bucket) then
 
 endif
 ! end Add bucket section
+
+!!! just set tracer 2 equal to tracer 1
+
+dt_tracers(:,:,:,2) = dt_tracers(:,:,:,nsphum)
 
 end subroutine idealized_moist_phys
 !=================================================================================================================================

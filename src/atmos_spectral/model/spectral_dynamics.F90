@@ -1270,12 +1270,14 @@ if(do_water_correction) then
       water_correction_factor = water_correction_factor*(1.+not_corr_water_tmp/corr_water_tmp) - not_corr_water_tmp/corr_water_tmp
        where ( p_full >= water_correction_limit )
            grid_tracers(:,:,:,future,nhum) = water_correction_factor*grid_tracers(:,:,:,future,nhum)
+           grid_tracers(:,:,:,future,2) = water_correction_factor*grid_tracers(:,:,:,future,2) !!!
        endwhere
 !s End second part of mj's extra code.
 
       if(tracer_attributes(nhum)%numerical_representation == 'spectral') then
        where ( p_full > water_correction_limit ) !s mj's modification here was adding the where statement around the correction to spec_tracers.
         spec_tracers(:,:,:,future,nhum) = water_correction_factor*spec_tracers(:,:,:,future,nhum)
+        spec_tracers(:,:,:,future,nhum) = water_correction_factor*spec_tracers(:,:,:,future,nhum) !!!
        endwhere !s the endwhere to mj's additional where.
       endif
     endif
