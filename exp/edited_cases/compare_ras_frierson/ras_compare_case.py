@@ -23,7 +23,7 @@ cb = IscaCodeBase.from_directory(GFDL_BASE)
 
 # create an Experiment object to handle the configuration of model parameters
 # and output diagnostics
-exp = Experiment('dupe_tracer_experiment_6', codebase=cb)
+exp = Experiment('ras_comparison_case', codebase=cb)
 
 #Add any input files that are necessary for a particular experiment.
 exp.inputfiles = [os.path.join(GFDL_BASE,'input/land_masks/era_land_t42.nc'),os.path.join(GFDL_BASE,'input/rrtm_input_files/ozone_1990.nc'),
@@ -32,6 +32,7 @@ exp.inputfiles = [os.path.join(GFDL_BASE,'input/land_masks/era_land_t42.nc'),os.
 #Tell model how to write diagnostics
 diag = DiagTable()
 diag.add_file('atmos_monthly', 30, 'days', time_units='days')
+diag.add_file('atmos_4xday', 6, 'hours', time_units='hours')
 
 #Tell model which diagnostics to write
 diag.add_field('dynamics', 'ps', time_avg=True)
@@ -46,10 +47,6 @@ diag.add_field('dynamics', 'vcomp', time_avg=True)
 diag.add_field('dynamics', 'temp', time_avg=True)
 diag.add_field('dynamics', 'vor', time_avg=True)
 diag.add_field('dynamics', 'div', time_avg=True)
-diag.add_field('atmosphere', 'dt_qg_convection', time_avg=True)
-
-diag.add_field('atmosphere', 'dt_qg_conv_2', time_avg=True)
-diag.add_field('dynamics', 'sphum_2', time_avg=True)
 
 exp.diag_table = diag
 
@@ -58,7 +55,7 @@ exp.diag_table = diag
 exp.clear_rundir()
 
 #Define values for the 'core' namelist
-namelist_name = os.path.join(GFDL_BASE, 'exp/edited_cases/diag_tests/diag_tests.nml')
+namelist_name = os.path.join(GFDL_BASE, 'exp/edited_cases/compare_ras_frierson/ras.nml')
 nml = f90nml.read(namelist_name)
 exp.namelist = nml
 
@@ -72,15 +69,10 @@ exp.update_namelist({
     }
 })
 
-# choose field table
-exp.set_field_table("test_field_table")
-
-# keep messing with namelist? do_water_correction currently commented out along with the entire do_water_correction section in spectral_dynamics
-
 #Lets do a run!
 if __name__=="__main__":
     cb.compile()  # compile the source code to working directory $GFDL_WORK/codebase
 
     exp.run(1, use_restart=False, num_cores=NCORES)
-    for i in range(2,2):
+    for i in range(2,62):
         exp.run(i, num_cores=NCORES)

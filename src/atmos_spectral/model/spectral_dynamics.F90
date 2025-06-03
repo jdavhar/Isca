@@ -1242,47 +1242,50 @@ if(do_energy_correction) then
   endif
 endif
 
-if(do_water_correction) then
-  if(dry_model) then
-    call error_mesg('compute_corrections','do_water_correction must be .false. in a dry model (default is .true.)', FATAL)
-  else
-    mean_water_tmp  = mass_weighted_global_integral(grid_tracers(:,:,:,future,nhum), psg(:,:,future))
-
+!if(do_water_correction) then
+!  if(dry_model) then
+!    call error_mesg('compute_corrections','do_water_correction must be .false. in a dry model (default is .true.)', FATAL)
+!  else
+!    mean_water_tmp  = mass_weighted_global_integral(grid_tracers(:,:,:,future,nhum), psg(:,:,future))
+!
 !s Adding mj's water correction limit code from MiMA
 !mj add water correction upper limit
-    water_mask = 0
-    where ( p_full >= water_correction_limit )
-       water_mask = 1
-    endwhere
-    corr_water_tmp    = mass_weighted_global_integral(grid_tracers(:,:,:,future,nhum)*water_mask, psg(:,:,future))
-    water_mask_not_corr = 0
-    where ( p_full < water_correction_limit )
-       water_mask_not_corr = 1
-    endwhere
-    not_corr_water_tmp= mass_weighted_global_integral(grid_tracers(:,:,:,future,nhum)*water_mask_not_corr, psg(:,:,future))
+!    water_mask = 0
+!    where ( p_full >= water_correction_limit )
+!       water_mask = 1
+!    endwhere
+!    corr_water_tmp    = mass_weighted_global_integral(grid_tracers(:,:,:,future,nhum)*water_mask, psg(:,:,future))
+!    water_mask_not_corr = 0
+!    where ( p_full < water_correction_limit )
+!       water_mask_not_corr = 1
+!    endwhere
+!    not_corr_water_tmp= mass_weighted_global_integral(grid_tracers(:,:,:,future,nhum)*water_mask_not_corr, psg(:,:,future))
 !s end of first part of mj extra code.
-
-    if(mean_water_tmp > 0.) then
-      water_correction_factor = mean_water_previous/mean_water_tmp
-
+!
+!    if(mean_water_tmp > 0.) then
+!      water_correction_factor = mean_water_previous/mean_water_tmp
+!
 !s Begin second part of mj's extra code.
 !mj add water correction upper limit
-      water_correction_factor = water_correction_factor*(1.+not_corr_water_tmp/corr_water_tmp) - not_corr_water_tmp/corr_water_tmp
-       where ( p_full >= water_correction_limit )
-           grid_tracers(:,:,:,future,nhum) = water_correction_factor*grid_tracers(:,:,:,future,nhum)
-           grid_tracers(:,:,:,future,2) = water_correction_factor*grid_tracers(:,:,:,future,2) !!!
-       endwhere
+!      water_correction_factor = water_correction_factor*(1.+not_corr_water_tmp/corr_water_tmp) - not_corr_water_tmp/corr_water_tmp
+!       where ( p_full >= water_correction_limit )
+!            grid_tracers(:,:,:,future,nhum) = water_correction_factor*grid_tracers(:,:,:,future,nhum)
+!           ! grid_tracers(:,:,:,future,2) = water_correction_factor*grid_tracers(:,:,:,future,2) !!!
+!       endwhere
 !s End second part of mj's extra code.
+!
+!      if(tracer_attributes(nhum)%numerical_representation == 'spectral') then
+!       where ( p_full > water_correction_limit ) !s mj's modification here was adding the where statement around the correction to spec_tracers.
+!         spec_tracers(:,:,:,future,nhum) = water_correction_factor*spec_tracers(:,:,:,future,nhum)
+!        ! spec_tracers(:,:,:,future,nhum) = water_correction_factor*spec_tracers(:,:,:,future,nhum) !!!
+!       endwhere !s the endwhere to mj's additional where.
+!      endif
+!    endif
+!  endif
+!endif
 
-      if(tracer_attributes(nhum)%numerical_representation == 'spectral') then
-       where ( p_full > water_correction_limit ) !s mj's modification here was adding the where statement around the correction to spec_tracers.
-        spec_tracers(:,:,:,future,nhum) = water_correction_factor*spec_tracers(:,:,:,future,nhum)
-        spec_tracers(:,:,:,future,nhum) = water_correction_factor*spec_tracers(:,:,:,future,nhum) !!!
-       endwhere !s the endwhere to mj's additional where.
-      endif
-    endif
-  endif
-endif
+! grid_tracers(:,:,:,future,2) = grid_tracers(:,:,:,future,nhum) !!!
+! spec_tracers(:,:,:,future,2) = spec_tracers(:,:,:,future,nhum)
 
 ! !s Original FMS 2013 code
 ! if(do_water_correction) then

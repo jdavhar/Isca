@@ -55,7 +55,7 @@ exp.diag_table = diag
 exp.clear_rundir()
 
 #Define values for the 'core' namelist
-namelist_name = os.path.join(GFDL_BASE, 'exp/edited_cases/compare_conv_scheme_tests/frierson.nml')
+namelist_name = os.path.join(GFDL_BASE, 'exp/edited_cases/compare_ras_frierson/frierson.nml')
 nml = f90nml.read(namelist_name)
 exp.namelist = nml
 

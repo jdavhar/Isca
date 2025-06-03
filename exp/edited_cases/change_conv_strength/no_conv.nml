@@ -19,7 +19,7 @@
     do_simple       = .true.,
     two_stream_gray = .false.,                  !Don't use grey radiation
     do_rrtm_radiation = .true.,                 !Do use RRTM radiation
-    convection_scheme = 'RAS',                  !ras
+    convection_scheme = 'NONE',                 !No convection scheme
     land_option = 'input',                      !Use land mask from input file
     land_file_name = 'INPUT/era_land_t42.nc',   !Tell model where to find input file
     land_roughness_prefactor = 10.0,            !How much rougher to make land than ocean
@@ -61,10 +61,6 @@
     ice_albedo_value = 0.7,             !What value of albedo to use in regions of ice
     ice_concentration_threshold = 0.5/ !ice concentration threshold above which to make albedo equal to ice_albedo_value        
 
- &betts_miller_nml
-       rhbm   = .7   , 
-       do_simp = .false., 
-       do_shallower = .true./
 
  &lscale_cond_nml
     do_simple=.true.,

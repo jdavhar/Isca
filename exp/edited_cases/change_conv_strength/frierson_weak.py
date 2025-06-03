@@ -23,7 +23,7 @@ cb = IscaCodeBase.from_directory(GFDL_BASE)
 
 # create an Experiment object to handle the configuration of model parameters
 # and output diagnostics
-exp = Experiment('ras_comparison_case', codebase=cb)
+exp = Experiment('frierson_weak_conv', codebase=cb)
 
 #Add any input files that are necessary for a particular experiment.
 exp.inputfiles = [os.path.join(GFDL_BASE,'input/land_masks/era_land_t42.nc'),os.path.join(GFDL_BASE,'input/rrtm_input_files/ozone_1990.nc'),
@@ -32,7 +32,6 @@ exp.inputfiles = [os.path.join(GFDL_BASE,'input/land_masks/era_land_t42.nc'),os.
 #Tell model how to write diagnostics
 diag = DiagTable()
 diag.add_file('atmos_monthly', 30, 'days', time_units='days')
-diag.add_file('atmos_4xday', 6, 'hours', time_units='hours')
 
 #Tell model which diagnostics to write
 diag.add_field('dynamics', 'ps', time_avg=True)
@@ -55,7 +54,7 @@ exp.diag_table = diag
 exp.clear_rundir()
 
 #Define values for the 'core' namelist
-namelist_name = os.path.join(GFDL_BASE, 'exp/edited_cases/compare_conv_scheme_tests/ras.nml')
+namelist_name = os.path.join(GFDL_BASE, 'exp/edited_cases/change_conv_strength/frierson.nml')
 nml = f90nml.read(namelist_name)
 exp.namelist = nml
 
@@ -69,10 +68,12 @@ exp.update_namelist({
     }
 })
 
+#add change to tau_bg in qg_moist_nml
+
 #Lets do a run!
 if __name__=="__main__":
     cb.compile()  # compile the source code to working directory $GFDL_WORK/codebase
 
     exp.run(1, use_restart=False, num_cores=NCORES)
-    for i in range(2,62):
+    for i in range(2,25):
         exp.run(i, num_cores=NCORES)
